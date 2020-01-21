@@ -7,6 +7,7 @@ use App\Repository\PropertyRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,11 +32,14 @@ class  AdminPropertyController extends AbstractController
     }
 
     /**
-     *@Route("/admin",name="admin.property.index")
+     * @Route("/admin",name="admin.property.index")
+     * @param PaginatorInterface $paginator
+     * @param Request $request
+     * @return Response
      */
-    public function index()
+    public function index(PaginatorInterface $paginator,Request $request )
     {
-        $properties=$this->repository->findAll();
+        $properties=$paginator->paginate($this->repository->findAll(), $request->query->getInt('page', 1),5);
         return $this->render('admin/property/index.html.twig',compact('properties'));
     }
 

@@ -4,7 +4,7 @@
 
     <div class="container mt-4">
 
-        <h1>Gerer les biens</h1>
+        <h1>Gerer les options</h1>
         {% for message in app.flashes('success') %}
         <div class="alert alert-success">
             {{ message }}
@@ -14,19 +14,19 @@
          <table class="table table-striped">
             <thead>
                 <tr>
-                   <th>Titres</th>
+                   <th>Noms</th>
                     <th>Actions</th>
                 </tr>
             </thead>
              <tbody>
-             {% for property in properties %}
+             {% for option in options %}
              <tr>
-                 <td>{{ property.title }}</td>
+                 <td>{{ option.name }}</td>
                  <td>
-                     <a href="{{ path('admin.property.edit',{id:property.id}) }}" class="btn btn-secondary">Editer</a>
-                     <form method="post" action="{{ path('admin.property.delete',{id:property.id}) }}" style="display:inline-block" onsubmit="return confirm('etes vous sure de supprimer ce bien')">
+                     <a href="{{ path('admin.option.edit',{id:option.id}) }}" class="btn btn-secondary">Editer</a>
+                     <form method="post" action="{{ path('admin.option.delete',{id:option.id}) }}" style="display:inline-block" onsubmit="return confirm('etes vous sure de supprimer cette option')">
                          <input type="hidden" name="_method" value="DELETE">
-                         <input type="hidden" name="_token" value="{{ csrf_token('delete'~property.id) }}">
+                         <input type="hidden" name="_token" value="{{ csrf_token('delete'~option.id) }}">
                          <button class="btn btn-danger" >Supprimer</button>
                      </form>
                  </td>
@@ -34,12 +34,9 @@
              {% endfor %}
              </tbody>
          </table>
-        <div class="pagination">
-            {{ knp_pagination_render(properties) }}
-        </div>
         <div class="text-right">
             <div class="a.btn.btn-primary">
-                <a href="{{ path('admin.property.new') }}" class="btn btn-primary">Creer un nouveau bien</a>
+                <a href="{{ path('admin.option.new') }}" class="btn btn-primary">Créer une nouvelle option</a>
             </div>
 
         </div>
