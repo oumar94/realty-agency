@@ -39,7 +39,7 @@ class  AdminPropertyController extends AbstractController
      */
     public function index(PaginatorInterface $paginator,Request $request )
     {
-        $properties=$paginator->paginate($this->repository->findAll(), $request->query->getInt('page', 1),5);
+        $properties=$paginator->paginate($this->repository->findAllQuery(), $request->query->getInt('page', 1),5);
         return $this->render('admin/property/index.html.twig',compact('properties'));
     }
 
@@ -81,6 +81,7 @@ class  AdminPropertyController extends AbstractController
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid())
         {
+
             $this->em->flush();
             $this->addFlash('success','Bien modifié avec success');
             return $this->redirectToRoute('admin.property.index');
@@ -107,6 +108,9 @@ class  AdminPropertyController extends AbstractController
              $this->em->flush();
             $this->addFlash('success','Bien supprimé avec success');
         }
+        $this->em->remove($property);
+        $this->em->flush();
+        $this->addFlash('success','Bien supprimé avec success');
 
         return $this->redirectToRoute('admin.property.index');
 

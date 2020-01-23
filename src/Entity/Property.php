@@ -7,18 +7,23 @@ use Doctrine\Common\Collections\Collection;
 
 use Doctrine\ORM\Mapping as ORM;
 use Cocur\Slugify\Slugify;
+use Exception;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PropertyRepository")
  * @UniqueEntity("title")
+ *  @Vich\Uploadable
  */
 class Property
 {
 
     const HEAT=[
-        0=>'electric',
-        1=>'gaz'
+        0=>'Electrique',
+        1=>'Gaz'
     ];
 
     /**
@@ -27,6 +32,13 @@ class Property
      * @ORM\Column(type="integer")
      */
     private $id;
+
+    /**
+     * @var File|null
+     * @Assert\Image(mimeTypes="image/jpeg")
+     * @Vich\UploadableField(mapping="property_image", fileNameProperty="filename")
+     */
+    private $imageFile;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -89,6 +101,10 @@ class Property
      * @ORM\Column(type="datetime")
      */
     private $created_at;
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Options", inversedBy="properties")
+     */
+    private $options;
     public function __construct()
     {
         $this->created_at=new \ DateTime();
@@ -102,10 +118,14 @@ class Property
     private $heat;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Options", inversedBy="properties")
+     * @ORM\Column(type="datetime")
      */
-    private $options;
+    private $updated_at;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $filename;
 
 
     public function getId(): ?int
@@ -290,22 +310,76 @@ class Property
         return $this->options;
     }
 
-    public function addOption(Options $option): self
+    /**
+     * @param Options $options
+     * @return $this
+     */
+    public function addOption(Options $options): self
     {
-        if (!$this->options->contains($option)) {
-            $this->options[] = $option;
-            $option->addProperty($this);
+        if (!$this->options->contains($options)) {
+            $this->options[] = $options;
+            $options->addProperty($this);
         }
 
         return $this;
     }
 
-    public function removeOption(Options $option): self
+    public function removeOption(Options $options): self
     {
-        if ($this->options->contains($option)) {
-            $this->options->removeElement($option);
-            $option->removeProperty($this);
+        if ($this->options->contains($options)) {
+            $this->options->removeElement($options);
+            $options->removeProperty($this);
         }
+
+        return $this;
+    }
+
+
+
+    /**
+     * @return File|null
+     */
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
+    /**
+     * @param File|null $imageFile
+     * @return Property
+     * @throws Exception
+     */
+    public function setImageFile(?File $imageFile): Property
+    {
+        $this->imageFile = $imageFile;
+
+        if($this->imageFile instanceof UploadedFile)
+        {
+            $this->updated_at= new \DateTime('now');
+        }
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updated_at;
+    }
+
+    public function setUpdatedAt(\DateTimeInterface $updated_at): self
+    {
+        $this->updated_at = $updated_at;
+
+        return $this;
+    }
+
+    public function getFilename(): ?string
+    {
+        return $this->filename;
+    }
+
+    public function setFilename(?string $filename): Property
+    {
+        $this->filename = $filename;
 
         return $this;
     }

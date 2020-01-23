@@ -12,11 +12,14 @@ class PropertyFixtures extends Fixture
 {
 
 
+    /**
+     * @param ObjectManager $manager
+     */
     public function load(ObjectManager $manager)
     {
         $faker=Factory::create('fr_FR');
-        for ($i = 0; $i < 100; $i++)
-     {
+        for ($i = 0; $i < 2; $i++)
+        {
             $property=new Property();
             $property->setTitle($faker->words(3,true))
                 ->setDescription($faker->sentences(3,true))

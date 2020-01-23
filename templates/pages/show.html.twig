@@ -7,13 +7,18 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-8">
+				{% if property.filename %}
+					<img src="{{ vich_uploader_asset(property,'imageFile') |imagine_filter('medium')}}" alt="card-img-top" >
 
+				{% else %}
+					<img src="{{ '/images/properties/empty.jpg' | imagine_filter('medium') }}" alt="card-img-top" >
+				{% endif %}
 	         </div>
 	         <div class="col-md-4">
 	         	<h1>{{ property.title }}</h1>
-	         	<h2>{{ property.rooms }} pieces - {{ property.surface }} m²</h2>
+	         	<h2>{{ property.rooms }} pièces - {{ property.surface }} m²</h2>
 	               <div class="text-primary" style="font-weight:bold;font-size: 4em; ">{{ property.formattedPrice }}€</div>
-	               <a href="#" class="btn btn-primary" >Contact the agency</a>
+	               <a href="#" class="btn btn-primary" >Contacter l'agence</a>
 	         </div>
         </div>
 	</div>
@@ -26,32 +31,37 @@
 	</p>
      <div class="row">
 		<div class="col-md-8">
-	   		<table>
-	   			<h2>Characteristics</h2>
+			<h2>Caractristiques</h2>
+	   		<table class="table table-stripped">
 	   			<tr>
-	   				<td>Living area</td>
+	   				<td>Surface habitable</td>
 	   				<td>{{ property.surface }} m²</td>
 	   			</tr>
 	   			<tr>
-	   				<td>Price</td>
+	   				<td>Prix</td>
 	   				<td>{{ property.rooms }} </td>
 	   			</tr>
 	   			<tr>
-	   				<td>Rooms</td>
+	   				<td>Chambres</td>
 	   				<td>{{ property.bedrooms }} </td>
 	   			</tr>
 	   			<tr>
-	   				<td>Floor</td>
+	   				<td>Etage</td>
 	   				<td>{{ property.floor }} </td>
 	   			</tr>
 	   			<tr>
-	   				<td>Heating</td>
+	   				<td>Chauffage</td>
 	   				<td>{{ property.heatType }} </td>
 	   			</tr>
 	   		</table>
          </div>
          <div class="col-md-4">
          <h2>Specificités</h2>
+			 <ul class="list-group">
+				 {% for option in property.options %}
+				 <li class="list-group-item">{{ option.name }}</li>
+				 {% endfor %}
+			 </ul>
          </div>
      </div>     
 </div>
