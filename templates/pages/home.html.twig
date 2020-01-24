@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<div class="container">
+	
+	<h1>les derniers biens</h1>
+	<div class="row flex">
+		{% for property in properties %}
+		<div class="col-3">
+			<div class="card">
+
+				{% if property.filename %}
+					<img src="{{ vich_uploader_asset(property,'imageFile') |imagine_filter('thumb')}}" alt="card-img-top" style="width: 100%;height: 200px;">
+
+				{% else %}
+					<img src="{{ '/images/properties/empty.jpg' | imagine_filter('thumb') }}" alt="card-img-top" style="width: 100%;height: 200px;">
+				{% endif %}
+
+				<div class="card-body">
+				    <h5 class="card-title">
+				    	<a href="{{ path('property.show',{id:property.id,slug:property.slug}) }}">{{ property.title }}</a>
+				    </h5>
+				     <p class="card-text">{{ property.city }} {{ property.postalCode }}</p>
+				     <div class="text-primary" style="font-weight:bold;font-size: 2em; ">{{ property.formattedPrice }}€</div>
+
+			    </div>
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+
+</div>
+{% endblock %}
