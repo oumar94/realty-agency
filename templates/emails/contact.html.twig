@@ -1,0 +1,34 @@
+{% block title 'MailDev' %}
+  {% block stylesheets %}
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.12/css/select2.min.css">
+  {% endblock %}
+{% block body %}
+    <h1>Demande de contact concernant le bien <h3>{{ contact.property.title }}</h3> </h1>
+<table class="table table-stripped">
+    <tr>
+        <td>Nom du bien</td>
+        <td><a href="{{ url('property.show',{id:contact.property.id,slug:contact.property.slug}) }}">{{ contact.property.title }}</a></td>
+    </tr>
+    <tr>
+        <td>Prenom</td>
+        <td>{{contact.firstname }} </td>
+    </tr>
+    <tr>
+        <td>Nom</td>
+        <td>{{ contact.lastname }} </td>
+    </tr>
+    <tr>
+        <td>Telephone</td>
+        <td>{{ contact.phone }} </td>
+    </tr>
+    <tr>
+        <td>Email</td>
+        <td>{{ contact.email }} </td>
+    </tr>
+    <tr>
+        <td>Message</td>
+        <td>{{ contact.message  |nl2br }} </td>
+    </tr>
+</table>
+{% endblock %}

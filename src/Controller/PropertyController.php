@@ -1,7 +1,11 @@
 <?php 
 namespace App\Controller ;
+use App\Entity\Contact;
+use App\Entity\Property;
 use App\Entity\PropertySearch;
+use App\Form\ContactType;
 use App\Form\PropertySearchType;
+use App\Notification\ContactNotification;
 use Knp\Component\Pager\PaginatorInterface;
 use  Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,19 +49,43 @@ class PropertyController extends AbstractController
            ]);
 	}
 
-	 /**
+    /**
      * @Route("/properties/{slug}-{id}",name="property.show",requirements={"slug":"[a-z0-9\-]*"})
+     * @param Property $property
+     * @param string $slug
+     * @param Request $request
+     * @param ContactNotification $notification
+     * @return Response
      */
 
-	public function show($slug,$id)
+	public function show(Property $property, string $slug,Request $request,ContactNotification $notification):Response
 
 	{
-        $property=$this->repository->find($id);
+	    if($property->getSlug()!=$slug) {
+	        return $this->redirectToRoute('property.show',[
+	        'id'=>$property->getId(),
+            'slug'=>$property->geSlug()
+            ],301);
+        }
+	    $contact=new Contact($property);
+	    $form=$this->createForm(ContactType::class, $contact);
+	    $form->handleRequest($request);
+	    if($form->isSubmitted() && $form->isValid())
+        {
+            $notification->notify($contact);
+            $this->addFlash('success','votre email a bien ete envoyé');
+            /*return $this->redirectToRoute('property.show',[
+                'id'=>$property->getId(),
+                'slug'=>$property->geSlug()
+            ],301);*/
+        }
+
 
 		return $this->render('pages/show.html.twig',[
 
 			'property'=>$property,
-			'current_menu'=>'properties'
+			'current_menu'=>'properties',
+            'form'=>$form->createView()
 
 
 		   ]);
